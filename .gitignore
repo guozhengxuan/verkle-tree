@@ -47,6 +47,9 @@ deps/**
 .vscode/
 .idea/
 
+# clion
+**/cmake-build-debug/
+
 # macOS
 .DS_Store
 

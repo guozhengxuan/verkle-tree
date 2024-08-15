@@ -3,7 +3,6 @@
 //
 #pragma once
 #include <blst.h>
-#include <memory>
 #include "Fr.h"
 
 namespace verkle::bandersnatch

@@ -1,9 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
-
 project(bandersnatch)
+set(CMAKE_CXX_STANDARD 20)
 
 include(ExternalProject)
-
 ExternalProject_Add(
         blst
         GIT_REPOSITORY https://github.com/supranational/blst.git
@@ -16,13 +15,19 @@ ExternalProject_Add(
 )
 
 ExternalProject_Get_Property(blst SOURCE_DIR)
+set(BLST_INCLUDE_DIR ${SOURCE_DIR}/bindings)
 ExternalProject_Get_Property(blst BINARY_DIR)
 set(BLST_LIB ${BINARY_DIR}/libblst.a)
-set(BLST_INCLUDE_DIR ${SOURCE_DIR}/bindings)
 
-include_directories(${BLST_INCLUDE_DIR})
+file(GLOB_RECURSE SRCS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
-add_library(bandersnatch bandersnatch/bandersnatch.cpp)
-
+add_library(bandersnatch ${SRCS})
+target_include_directories(bandersnatch PUBLIC ${BLST_INCLUDE_DIR})
 add_dependencies(bandersnatch blst)
 target_link_libraries(bandersnatch PRIVATE ${BLST_LIB})
+
+if (TESTS)
+    enable_testing()
+    set(CTEST_OUTPUT_ON_FAILURE TRUE)
+    add_subdirectory(test)
+endif()

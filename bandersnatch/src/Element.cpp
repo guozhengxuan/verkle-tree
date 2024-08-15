@@ -6,9 +6,9 @@
 
 using namespace verkle::bandersnatch;
 
-Element::Element() : m_point(std::make_shared<auto>()) {}
+Element::Element() : m_point(std::make_shared<blst_p1>()) {}
 
-Element::Element(const blst_p1& point) : m_point(std::make_shared<auto>(point)) {}
+Element::Element(const blst_p1& point) : m_point(std::make_shared<blst_p1>(point)) {}
 
 Element::Element(const byte* in, size_t len) : m_point(std::make_shared<blst_p1>())
 {
@@ -64,7 +64,7 @@ Element Element::mult(const Fr& fr, const Element& a)
 
 Element Element::generator()
 {
-    auto const g = blst_p1_generator();
+    auto g = blst_p1_generator();
     return Element(*g);
 }
 
