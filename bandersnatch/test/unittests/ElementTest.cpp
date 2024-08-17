@@ -8,5 +8,6 @@ namespace verkle {
         BOOST_AUTO_TEST_SUITE(TEST)
         
         BOOST_AUTO_TEST_SUITE_END()
+        
     }
 }
