@@ -1,9 +1,9 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.14)
 
 project(bandersnatch)
 
-file(GLOB_RECURSE SRCS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
-file(GLOB_RECURSE HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.h")
+file(GLOB_RECURSE SRCS bandersnatch/*.cpp)
+file(GLOB_RECURSE HEADERS bandersnatch/*.h)
 
 add_library(bandersnatch ${SRCS} ${HEADERS})
 target_link_libraries(bandersnatch PRIVATE blst)
