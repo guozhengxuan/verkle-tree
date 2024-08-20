@@ -8,5 +8,6 @@ list(APPEND CMAKE_MODULE_PATH ${VERKLE_CMAKE_DIR})
 
 include(ProjectBLST)
 
+add_subdirectory(utilities)
+
 add_subdirectory(bandersnatch)
-add_subdirectory(utility)

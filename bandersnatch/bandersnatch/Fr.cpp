@@ -77,20 +77,17 @@ bool Fr::operator==(const Fr& other) const
     return true;
 }
 
+bool Fr::operator!=(const Fr& other) const
+{
+    return !(*this == other);
+}
+
 Fr Fr::inv() const
 {
     Fr ret;
     blst_fr_inverse(ret.m_val.get(), m_val.get());
     return ret;
 }
-
-std::shared_ptr<const blst_scalar> Fr::toScalar() const
-{
-    auto ret = std::make_shared<blst_scalar>();
-    blst_scalar_from_fr(ret.get(), m_val.get());
-    return ret;
-}
-
 
 void Fr::serialize(uint64_t ret[4]) const
 {

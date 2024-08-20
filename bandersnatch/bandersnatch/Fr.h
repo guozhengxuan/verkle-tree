@@ -7,10 +7,13 @@
 
 namespace verkle::bandersnatch
 {
+class Element;
 class Fr
 {
 public:
     Fr();
+
+    // deserialize
     Fr(const uint64_t a[4]);
     Fr(const byte* msg, size_t len);
 
@@ -22,12 +25,12 @@ public:
     Fr operator*(const Fr& other) const;
     Fr inv() const;
     bool operator==(const Fr& other) const;
-
-    std::shared_ptr<const blst_scalar> toScalar() const;
+    bool operator!=(const Fr& other) const;
 
     void serialize(uint64_t ret[4]) const;
 
 private:
     std::shared_ptr<blst_fr> m_val;
+    friend class Element;
 };
 }

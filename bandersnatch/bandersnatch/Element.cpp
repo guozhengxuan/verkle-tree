@@ -1,7 +1,6 @@
 //
 // Created by Zhengxuan Guo on 2024/8/13.
 //
-
 #include "Element.h"
 
 using namespace verkle::bandersnatch;
@@ -35,8 +34,9 @@ Element& Element::dbl()
 
 Element& Element::mult(const Fr& fr)
 {
-    auto scalar = fr.toScalar();
-    blst_p1_mult(m_point.get(), m_point.get(), scalar->b, 255);
+    blst_scalar scalar;
+    blst_scalar_from_fr(&scalar, fr.m_val.get());
+    blst_p1_mult(m_point.get(), m_point.get(), scalar.b, 255);
     return *this;
 }
 
@@ -57,8 +57,9 @@ Element Element::dbl(const Element& a)
 Element Element::mult(const Fr& fr, const Element& a)
 {
     Element ret;
-    auto scalar = fr.toScalar();
-    blst_p1_mult(ret.m_point.get(), a.m_point.get(), scalar->b, 255);
+    blst_scalar scalar;
+    blst_scalar_from_fr(&scalar, fr.m_val.get());
+    blst_p1_mult(ret.m_point.get(), a.m_point.get(), scalar.b, 255);
     return ret;
 }
 
