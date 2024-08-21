@@ -1,4 +1,0 @@
-project(utilities)
-
-find_package(boost_unit_test_framework CONFIG REQUIRED)
-find_package(boost_filesystem CONFIG REQUIRED)
