@@ -40,14 +40,13 @@ BOOST_AUTO_TEST_CASE(testRandom)
 
 BOOST_AUTO_TEST_CASE(testAdd)
 {
-    bandersnatch::Fr exp(
-        (uint64_t[4]){
-            0xbe6bcfbe3a401dbc,
-            0x7fb2587219c6e720,
-            0xe08095a173a7a164,
-            0x1cb905bdfcf761a0,
-        }
-    );
+    uint64_t raw[4] = {
+        0xbe6bcfbe3a401dbc,
+        0x7fb2587219c6e720,
+        0xe08095a173a7a164,
+        0x1cb905bdfcf761a0,
+    };
+    bandersnatch::Fr exp(raw);
     auto f1 = FixedFr1();
     auto f2 = FixedFr2();
 
@@ -61,14 +60,14 @@ BOOST_AUTO_TEST_CASE(testAdd)
 
 BOOST_AUTO_TEST_CASE(testSub)
 {
-    bandersnatch::Fr exp(
-        (uint64_t[4]){
-            0xd4306db17f12686,
-            0x8427bea7f896a06d,
-            0xc1c92d1ccd02534a,
-            0x41294122643035d6,
-        }
-    );
+    uint64_t raw[4] = 
+    {
+        0xd4306db17f12686,
+        0x8427bea7f896a06d,
+        0xc1c92d1ccd02534a,
+        0x41294122643035d6,
+    };
+    bandersnatch::Fr exp(raw);
     auto f1 = FixedFr1();
     auto f2 = FixedFr2();
     
@@ -82,14 +81,13 @@ BOOST_AUTO_TEST_CASE(testSub)
 
 BOOST_AUTO_TEST_CASE(testMult)
 {
-    bandersnatch::Fr exp(
-        (uint64_t[4]){
-            0xe9f26c96d15bb807,
-            0x6ad84e7137609152,
-            0xe193b5e1ce7d01c4,
-            0x27625b6a622c0518,
-        }
-    );
+    uint64_t raw[4] = {
+        0xe9f26c96d15bb807,
+        0x6ad84e7137609152,
+        0xe193b5e1ce7d01c4,
+        0x27625b6a622c0518,
+    };
+    bandersnatch::Fr exp(raw);
     auto f1 = FixedFr1();
     auto f2 = FixedFr2();
     
@@ -103,14 +101,13 @@ BOOST_AUTO_TEST_CASE(testMult)
 
 BOOST_AUTO_TEST_CASE(testInv)
 {
-    bandersnatch::Fr exp(
-        (uint64_t[4]){
-            0xc2eecde5714050d6,
-            0x19f77495338244b4,
-            0x65208d07b3ef94b1,
-            0x524a236a985c691d,
-        }
-    );
+    uint64_t raw[4] = {
+        0xc2eecde5714050d6,
+        0x19f77495338244b4,
+        0x65208d07b3ef94b1,
+        0x524a236a985c691d,
+    };
+    bandersnatch::Fr exp(raw);
     auto f1 = FixedFr1();
     auto res = f1.inv();
     BOOST_ASSERT(res == exp);

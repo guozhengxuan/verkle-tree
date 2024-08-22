@@ -3,6 +3,7 @@
 //
 
 #include <cstdint>
+#include <cstring>
 #include <random>
 #include "Fr.h"
 
