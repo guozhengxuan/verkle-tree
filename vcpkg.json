@@ -3,6 +3,6 @@
   "version": "1.0",
   "dependencies": [
     "boost-test",
-    "boost-log"
+    "boost-filesystem"
   ]
 }

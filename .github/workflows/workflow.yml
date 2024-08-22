@@ -1,0 +1,161 @@
+name: bcos-crypto GitHub Actions
+on:
+  push:
+    paths-ignore:
+      - "docs/**"
+      - "Changelog.md"
+      - "README.md"
+  pull_request:
+    paths-ignore:
+      - "docs/**"
+      - "Changelog.md"
+      - "README.md"
+  release:
+    types: [published, created, edited]
+env:
+  CCACHE_DIR: ${{ github.workspace }}/ccache
+
+jobs:
+  build_with_clang:
+    name: build_with_clang
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 5
+      - name: install macOS dependencies
+        if: runner.os == 'macOS'
+        run: brew install ccache
+      - name: install Ubuntu dependencies
+        if: runner.os == 'Linux'
+        run: sudo apt install -y git curl build-essential clang cmake ccache
+      - name: vcpkg essentials
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git
+          export VCPKG_ROOT=$(pwd)/vcpkg
+          export PATH=$PATH:$VCPKG_ROOT
+      - name: configure
+        if: runner.os == 'macOS'
+        run: |
+            export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && CC=/usr/bin/clang CXX=/usr/bin/clang++
+            cmake --preset=test
+      - name: configure
+        if: runner.os == 'Linux'
+        run: |
+          export CC=/usr/bin/clang CXX=/usr/bin/clang++
+          cmake --preset=test
+      - name: compile
+        run: cmake --build build -j2
+      - name: run test
+        run: cd build/bandersnatch && ctest
+  build_with_gcc:
+    name: build_with_gcc
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 5
+      - uses: actions/cache@v2
+        id: ccache
+        with:
+          path: ccache
+          key: ccache-ubuntu20-v2-notest-${{ runner.temp }}-${{ github.base_ref }}-${{ hashFiles('.github/workflows/workflow.yml') }}
+          restore-keys: |
+            ccache-ubuntu20-v2-notest-${{ runner.temp }}-${{ github.base_ref }}-${{ hashFiles('.github/workflows/workflow.yml') }}
+            ccache-ubuntu20-v2-notest-${{ runner.temp }}-${{ github.base_ref }}-
+            ccache-ubuntu20-v2-notest-${{ runner.temp }}-
+      - name: install Ubuntu dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y git curl build-essential cmake ccache
+      - name: vcpkg essentials
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git
+          export VCPKG_ROOT=$(pwd)/vcpkg
+          export PATH=$PATH:$VCPKG_ROOT
+      - name: configure
+        run: |
+          export GCC='gcc-10'
+          export CXX='g++-10'
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          cmake --preset=test
+      - name: compile
+        run: cmake --build build -j2
+      - name: run test
+        run: cd build/bandersnatch && ctest
+  ubuntu22_04_build_with_gcc:
+    name: ubuntu22_04_build_with_gcc
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 5
+      - uses: actions/cache@v2
+        id: ccache
+        with:
+          path: ccache
+          key: ccache-ubuntu-v2-notest-${{ runner.temp }}-${{ github.base_ref }}-${{ hashFiles('.github/workflows/workflow.yml') }}
+          restore-keys: |
+            ccache-ubuntu-v2-notest-${{ runner.temp }}-${{ github.base_ref }}-${{ hashFiles('.github/workflows/workflow.yml') }}
+            ccache-ubuntu-v2-notest-${{ runner.temp }}-${{ github.base_ref }}-
+            ccache-ubuntu-v2-notest-${{ runner.temp }}-
+      - name: install Ubuntu dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git curl build-essential cmake ccache lcov libzstd-dev python3-dev
+      - name: vcpkg essentials
+        run: |
+          git clone https://github.com/microsoft/vcpkg.git
+          export VCPKG_ROOT=$(pwd)/vcpkg
+          export PATH=$PATH:$VCPKG_ROOT
+      - name: configure
+        run: |
+          export GCC='gcc-10'
+          export CXX='g++-10'
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          export CPATH=/Library/Developer/CommandLineTools/usr/include/c++/v1
+          cmake --preset=test
+      - name: compile
+        run: cmake --build build -j2
+      - name: run test
+        run: cd build/bandersnatch && ctest
+  build_with_centos:
+    name: build_with_centos
+    runs-on: ubuntu-latest
+    container:
+      image: docker.io/centos:7
+      volumes:
+        - /github/home/.hunter:/github/home/.hunter
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 5
+      - name: install CentOS dependencies
+        run: |
+          yum install -y epel-release centos-release-scl
+          yum install -y git make gcc gcc-c++ glibc-static glibc-devel cmake3 ccache devtoolset-11 llvm-toolset-7.0 rh-perl530-perl libzstd-devel zlib-devel flex bison python-devel python3-devel
+      - name: configure and compile
+        run: |
+          rustup override set stable
+          cargo --version
+          export PATH="/usr/lib/ccache:/usr/local/opt/ccache/libexec:$PATH"
+          . /opt/rh/devtoolset-11/enable
+          . /opt/rh/rh-perl530/enable
+          export LIBCLANG_PATH=/opt/rh/llvm-toolset-7.0/root/lib64/
+          . /opt/rh/llvm-toolset-7.0/enable
+          alias cmake='cmake3'
+          git clone https://github.com/microsoft/vcpkg.git
+          export VCPKG_ROOT=$(pwd)/vcpkg
+          export PATH=$PATH:$VCPKG_ROOT
+          cmake3 --preset=test
+          cmake --build build -j2
+          cd build/bandersnatch && ctest
