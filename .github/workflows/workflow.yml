@@ -1,4 +1,4 @@
-name: bcos-crypto GitHub Actions
+name: verkle-tree GitHub Actions
 on:
   push:
     paths-ignore:
