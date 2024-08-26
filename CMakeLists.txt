@@ -11,3 +11,4 @@ include(ProjectBLST)
 add_subdirectory(utilities)
 
 add_subdirectory(bandersnatch)
+add_subdirectory(ipa)
