@@ -10,6 +10,8 @@ namespace verkle::bandersnatch
 class Element
 {
 public:
+    using ElementListPtr = std::shared_ptr<std::vector<Element>>;
+    
     Element();
     Element(const Element& other);
     Element& operator=(const Element& other);

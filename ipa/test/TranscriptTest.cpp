@@ -70,7 +70,7 @@ BOOST_AUTO_TEST_CASE(testAppendPoint)
 
     // append point twice
     tr.appendPoint(g, ipa::LABEL_INPUT_POINT);
-    tr.appendPoint(g, ipa::LABEL_OUTPPUT_POINT);
+    tr.appendPoint(g, ipa::LABEL_OUTPUT_POINT);
 
     auto challenge = tr.generateChallenge(ipa::LABEL_X);
     uint64_t out[4];
@@ -94,7 +94,7 @@ BOOST_AUTO_TEST_CASE(testAppendLabel)
     // append point and some labels
     tr.appendPoint(g, ipa::LABEL_INPUT_POINT);
     tr.appendLabel(ipa::LABEL_COMMITMENT);
-    tr.appendPoint(g, ipa::LABEL_OUTPPUT_POINT);
+    tr.appendPoint(g, ipa::LABEL_OUTPUT_POINT);
     tr.appendLabel(ipa::LABEL_RIGHT);
 
     auto challenge = tr.generateChallenge(ipa::LABEL_X);

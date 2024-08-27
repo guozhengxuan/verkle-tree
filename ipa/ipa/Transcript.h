@@ -13,7 +13,7 @@ enum SeperateLabel
     LABEL_IPA,
     LABEL_COMMITMENT,
     LABEL_INPUT_POINT,
-    LABEL_OUTPPUT_POINT,
+    LABEL_OUTPUT_POINT,
     LABEL_RESCALING,
     LABEL_LEFT,
     LABEL_RIGHT,
@@ -30,6 +30,7 @@ private:
     static const char* getLabelValue(const SeperateLabel& label);
 
 public:
+    using Ptr = std::shared_ptr<Transcript>;
     Transcript(SeperateLabel label);
     void appendLabel(SeperateLabel label);
     void appendScalar(const bandersnatch::Fr& scalar, SeperateLabel label);
@@ -42,7 +43,7 @@ inline const std::unordered_map<SeperateLabel, const char*> Transcript::labelVal
     {LABEL_IPA, "ipa"},
     {LABEL_COMMITMENT, "commitment"},
     {LABEL_INPUT_POINT, "input point"},
-    {LABEL_OUTPPUT_POINT, "output point"},
+    {LABEL_OUTPUT_POINT, "output point"},
     {LABEL_RESCALING, "rescaling"},
     {LABEL_LEFT, "left"},
     {LABEL_RIGHT, "right"},

@@ -43,6 +43,18 @@ Fr Fr::zero()
     return ret;
 }
 
+Fr Fr::one()
+{
+    Fr ret;
+    ret.m_val = {
+        0x1fffffffe,
+        0x5884b7fa00034802,
+        0x998c4fefecbc4ff5,
+        0x1824b159acc5056f,
+    };
+    return ret;
+}
+
 Fr Fr::random()
 {
     std::random_device rd;
@@ -56,6 +68,32 @@ Fr Fr::random()
     }
     Fr ret(a);
     return ret;
+}
+
+Fr Fr::fromUint64(uint64_t v)
+{
+    uint64_t a[4] = {v};
+    return Fr(a);
+}
+
+uint64_t Fr::toUint64() const
+{
+    return m_val.l[0];
+}
+
+int Fr::cmp(const Fr& other) const
+{
+    for (int i = 3; i >= 0; --i)
+    {
+        if (m_val.l[i] > other.m_val.l[i])
+        {
+            return 1;
+        } else if (m_val.l[i] < other.m_val.l[i])
+        {
+            return -1;
+        }
+    }
+    return 0;
 }
 
 Fr Fr::operator+(const Fr& other) const

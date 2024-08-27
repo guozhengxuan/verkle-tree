@@ -11,6 +11,8 @@ class Element;
 class Fr
 {
 public:
+    using FrListPtr = std::shared_ptr<std::vector<Fr>>;
+
     Fr();
     Fr(const Fr& other);
     Fr& operator=(const Fr& other);
@@ -20,7 +22,15 @@ public:
     Fr(const byte* msg, size_t nbits);
 
     static Fr zero();
+    static Fr one();
     static Fr random();
+
+    // comparison in Montgomery form
+    int cmp(const Fr& other) const;
+
+    // from/to uint64_t are only used in ipa eval vector generation
+    static Fr fromUint64(uint64_t v);
+    uint64_t toUint64() const;
 
     Fr operator+(const Fr& other) const;
     Fr operator-(const Fr& other) const;

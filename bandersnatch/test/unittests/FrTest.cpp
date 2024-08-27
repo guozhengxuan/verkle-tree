@@ -1,7 +1,7 @@
 //
 // Created by Zhengxuan Guo on 2024/8/15.
 //
-#include "Constants.h"
+#include "Common.h"
 #include <bandersnatch/Fr.h>
 #include <testutils/TestPromptFixture.h>
 #include <boost/test/unit_test.hpp>
@@ -29,6 +29,19 @@ BOOST_AUTO_TEST_CASE(testZero)
     auto fr1 = FixedFr1();
     auto fr1SumZero = fr1 + zero;
     BOOST_ASSERT(fr1SumZero == fr1);
+}
+
+BOOST_AUTO_TEST_CASE(testOne)
+{
+    auto one = bandersnatch::Fr::one();
+    auto fr1 = FixedFr1();
+    auto fr1MultOne = fr1 * one;
+    BOOST_ASSERT(fr1MultOne == fr1);
+
+    auto oneInv = one.inv();
+    BOOST_ASSERT(oneInv == one);
+
+    BOOST_ASSERT(one*one == one);
 }
 
 BOOST_AUTO_TEST_CASE(testRandom)
