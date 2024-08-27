@@ -20,40 +20,39 @@ void Transcript::appendLabel(SeperateLabel label)
 
 void Transcript::appendScalar(const bandersnatch::Fr& scalar, SeperateLabel label)
 {
+    appendLabel(label);
+
     uint64_t out[4];
     scalar.serialize(out);
-    appendLabel(label);
-    for (size_t i = 0; i < 4; ++i)
-    {
-        m_buffer << out[i];
-    }
+    m_buffer.write(reinterpret_cast<const char*>(out), sizeof(out));
 }
 
 void Transcript::appendPoint(const bandersnatch::Element& point, SeperateLabel label)
 {
+    appendLabel(label);
+    
     byte out[96];
     point.serialize(out);
-    appendLabel(label);
-    for (size_t i = 0; i < 96; ++i)
-    {
-        m_buffer << out[i];
-    }
+    m_buffer.write(reinterpret_cast<const char*>(out), sizeof(out));
 }
 
 verkle::bandersnatch::Fr Transcript::generateChallenge(SeperateLabel label)
 {
-    // fetch buffer and reset it
     appendLabel(label);
-    auto str = m_buffer.str();
-    auto combined = str.c_str();
+
+    // fetch buffer and reset it
+    auto len = m_buffer.rdbuf()->in_avail();
+    byte* combined = new byte[len];
+    m_buffer.read(reinterpret_cast<char*>(combined), len);
     m_buffer.str("");
     m_buffer.clear();
 
     // use buffer hash to generate a challenge
+    m_state.update(combined, len);
+    delete[] combined;
     unsigned char hash[32];
-    m_state.update(combined, strlen(combined));
     m_state.finalize(hash);
-    bandersnatch::Fr ret(hash, sizeof(hash));
+    bandersnatch::Fr ret(hash, 32*8*sizeof(unsigned char));
 
     // add the new challenge to the state
     // which "summarises" the previous state before we cleared it

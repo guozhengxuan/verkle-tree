@@ -28,10 +28,10 @@ Fr::Fr(const uint64_t a[4])
     blst_fr_from_uint64(&m_val, a);
 }
 
-Fr::Fr(const uint8_t* msg, size_t len)
+Fr::Fr(const uint8_t* msg, size_t nbits)
 {
     blst_scalar scalar;
-    blst_scalar_from_le_bytes(&scalar, msg, (len+7)/8);
+    blst_scalar_from_le_bytes(&scalar, msg, (nbits+7)/8);
     blst_fr_from_scalar(&m_val, &scalar);
 }
 

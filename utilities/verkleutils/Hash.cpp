@@ -21,4 +21,6 @@ void Hash::finalize(unsigned char out[32])
 {
     unsigned int _len;
     EVP_DigestFinal_ex(m_ctx, out, &_len);
+    EVP_MD_CTX_reset(m_ctx);
+    EVP_DigestInit_ex(m_ctx, EVP_sha256(), NULL);
 }

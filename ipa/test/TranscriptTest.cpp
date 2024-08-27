@@ -25,10 +25,10 @@ BOOST_AUTO_TEST_CASE(testChallengeScalar)
     challenge.serialize(out);
 
     uint64_t raw[4] = {
-        0xe9f26c96d15bb807,
-        0x6ad84e7137609152,
-        0xe193b5e1ce7d01c4,
-        0x27625b6a622c0518,
+        0x9c8ca8bdb2785ef8,
+        0x7f5c036bd7f1b221,
+        0x69d73d9566c4ea5d,
+        0x46d9ee65bc2da30d,
     };
     bandersnatch::Fr exp(raw);
     BOOST_ASSERT(challenge == exp);
@@ -54,10 +54,10 @@ BOOST_AUTO_TEST_CASE(testAppendScalar)
     challenge.serialize(out);
 
     uint64_t raw2[4] = {
-        0xe9f26c96d15bb807,
-        0x6ad84e7137609152,
-        0xe193b5e1ce7d01c4,
-        0x27625b6a622c0518,
+        0xa1458f845d64bdc,
+        0x6240c0aaf1ccf2c1,
+        0xaa1ea719e83b622c,
+        0x50a286aee96a8e8c,
     };
     bandersnatch::Fr exp(raw2);
     BOOST_ASSERT(challenge == exp);
@@ -77,10 +77,10 @@ BOOST_AUTO_TEST_CASE(testAppendPoint)
     challenge.serialize(out);
 
     uint64_t raw2[4] = {
-        0xe9f26c96d15bb807,
-        0x6ad84e7137609152,
-        0xe193b5e1ce7d01c4,
-        0x27625b6a622c0518,
+        0x3d7bcf250fbbd4ca,
+        0x2e34916fb1c77331,
+        0x342beba88f4caf1b,
+        0x165ec3c487655fc3,
     };
     bandersnatch::Fr exp(raw2);
     BOOST_ASSERT(challenge == exp);
@@ -102,10 +102,10 @@ BOOST_AUTO_TEST_CASE(testAppendLabel)
     challenge.serialize(out);
 
     uint64_t raw2[4] = {
-        0xe9f26c96d15bb807,
-        0x6ad84e7137609152,
-        0xe193b5e1ce7d01c4,
-        0x27625b6a622c0518,
+        0x65d00a1fd12c7f1a,
+        0x3fa282eb46713efa,
+        0x7103e2c705f23b7c,
+        0xe26e3e9526d325d,
     };
     bandersnatch::Fr exp(raw2);
     BOOST_ASSERT(challenge == exp);

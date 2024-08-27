@@ -18,8 +18,8 @@ BOOST_AUTO_TEST_CASE(testFromBytes)
         0x8a, 0xdd, 0x2d, 0x50, 0x08, 0x7b, 0xda, 0x61, 
         0xe2, 0xf7, 0x02, 0xa0, 0x3c, 0xb8, 0xf1, 0x3e
     };
-    bandersnatch::Fr t1(a, 32);
-    bandersnatch::Fr t2(a, 32);
+    bandersnatch::Fr t1(a, 256);
+    bandersnatch::Fr t2(a, 256);
     BOOST_ASSERT(t1 == t2);
 }
 
