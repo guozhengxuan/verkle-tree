@@ -50,6 +50,33 @@ Element& Element::mult(const Fr& fr)
     return *this;
 }
 
+Element Element::multiscalarMult(Element::ElementListPtr points, Fr::FrListPtr scalars)
+{
+    if (points->size() != scalars->size()) {
+        throw std::runtime_error("points and scalars have different sizes, " +
+            std::to_string(points->size()) + " != " + std::to_string(scalars->size()));
+    }
+
+    auto n = points->size();
+
+    // TODO: parallel optimization
+    // By now we use Pippenger's algorithm to accelerate MSM (Multi-Scalar Multiplication).
+    // It is implemented in blst lib.
+    auto scratch = blst_p1s_mult_pippenger_scratch_sizeof(points->size());
+    // void blst_p1s_mult_pippenger(blst_p1 *ret, const blst_p1_affine *const points[],
+    //                          size_t npoints, const byte *const scalars[],
+    //                          size_t nbits, limb_t *scratch);
+    blst_p1 ret;
+    auto* affinePoints = new blst_p1_affine[n];
+    for (auto i = 0; i < n; ++i)
+    {
+        blst_p1_to_affine(&affinePoints[i], &points->at(i).m_point);
+    }
+
+    auto* baseScalars = new byte[n];
+
+}
+
 bool Element::operator==(const Element& other) const
 {
     return blst_p1_is_equal(&m_point, &other.m_point);

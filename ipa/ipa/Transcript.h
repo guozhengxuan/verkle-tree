@@ -8,7 +8,7 @@
 
 namespace verkle::ipa
 {
-enum SeperateLabel
+enum class SeperateLabel
 {
     LABEL_IPA,
     LABEL_COMMITMENT,
@@ -40,14 +40,14 @@ public:
 };
 
 inline const std::unordered_map<SeperateLabel, const char*> Transcript::labelValues = {
-    {LABEL_IPA, "ipa"},
-    {LABEL_COMMITMENT, "commitment"},
-    {LABEL_INPUT_POINT, "input point"},
-    {LABEL_OUTPUT_POINT, "output point"},
-    {LABEL_RESCALING, "rescaling"},
-    {LABEL_LEFT, "left"},
-    {LABEL_RIGHT, "right"},
-    {LABEL_X, "x"}
+    {SeperateLabel::LABEL_IPA, "ipa"},
+    {SeperateLabel::LABEL_COMMITMENT, "commitment"},
+    {SeperateLabel::LABEL_INPUT_POINT, "input point"},
+    {SeperateLabel::LABEL_OUTPUT_POINT, "output point"},
+    {SeperateLabel::LABEL_RESCALING, "rescaling"},
+    {SeperateLabel::LABEL_LEFT, "left"},
+    {SeperateLabel::LABEL_RIGHT, "right"},
+    {SeperateLabel::LABEL_X, "x"}
 };
 
 }

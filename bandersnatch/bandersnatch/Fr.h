@@ -8,6 +8,7 @@
 namespace verkle::bandersnatch
 {
 class Element;
+
 class Fr
 {
 public:
@@ -30,7 +31,7 @@ public:
 
     // from/to uint64_t are only used in ipa eval vector generation
     static Fr fromUint64(uint64_t v);
-    uint64_t toUint64() const;
+    [[nodiscard]] uint64_t toUint64() const;
 
     Fr operator+(const Fr& other) const;
     Fr operator-(const Fr& other) const;
@@ -46,7 +47,7 @@ public:
     void serialize(uint64_t ret[4]) const;
 
 private:
-    blst_fr m_val;
+    blst_fr m_val{};
     friend class Element;
 };
 }

@@ -7,6 +7,8 @@
 
 namespace verkle::bandersnatch
 {
+class Fr;
+
 class Element
 {
 public:
@@ -27,6 +29,7 @@ public:
     static Element add(const Element& a, const Element& b);
     static Element dbl(const Element& a);
     static Element mult(const Fr& fr, const Element& a);
+    static Element multiscalarMult(Element::ElementListPtr points, Fr::FrListPtr scalars);
 
     static Element generator();
 

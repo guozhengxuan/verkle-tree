@@ -1,6 +1,8 @@
 //
 // Created by Zhengxuan Guo on 2024/8/15.
 //
+#include <random>
+
 #include "Common.h"
 #include <bandersnatch/Fr.h>
 #include <testutils/TestPromptFixture.h>
@@ -21,6 +23,27 @@ BOOST_AUTO_TEST_CASE(testFromBytes)
     bandersnatch::Fr t1(a, 256);
     bandersnatch::Fr t2(a, 256);
     BOOST_ASSERT(t1 == t2);
+}
+
+BOOST_AUTO_TEST_CASE(testFromUint64)
+{
+    std::random_device rd;
+    std::mt19937_64 gen(rd());
+    std::uniform_int_distribution<uint64_t> dis(0, UINT64_MAX/3);
+
+    auto raw1 = dis(gen);
+    auto raw2 = dis(gen);
+    auto raw3 = raw1 + raw2;
+
+    uint64_t x1[4] = {raw1};
+    uint64_t x2[4] = {raw2};
+    uint64_t x3[4] = {raw3};
+
+    bandersnatch::Fr fr1(x1);
+    bandersnatch::Fr fr2(x2);
+    bandersnatch::Fr fr3(x3);
+
+    BOOST_ASSERT(fr1+fr2 == fr3);
 }
 
 BOOST_AUTO_TEST_CASE(testZero)

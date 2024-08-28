@@ -5,22 +5,24 @@
 #include "testutils/TestPromptFixture.h"
 #include <boost/test/unit_test.hpp>
 
+using verkle::ipa::SeperateLabel;
+
 namespace verkle::test
 {
 BOOST_FIXTURE_TEST_SUITE(TransCriptTest, TestPromptFixture)
 
 BOOST_AUTO_TEST_CASE(testCallChallengeScalarTwice)
 {
-    ipa::Transcript tr(ipa::LABEL_IPA);
-    auto challenge_1 = tr.generateChallenge(ipa::LABEL_X);
-    auto challenge_2 = tr.generateChallenge(ipa::LABEL_X);
+    ipa::Transcript tr(SeperateLabel::LABEL_X);
+    auto challenge_1 = tr.generateChallenge(SeperateLabel::LABEL_X);
+    auto challenge_2 = tr.generateChallenge(SeperateLabel::LABEL_X);
     BOOST_ASSERT(challenge_1 != challenge_2);
 }
 
 BOOST_AUTO_TEST_CASE(testChallengeScalar)
 {
-    ipa::Transcript tr(ipa::LABEL_IPA);
-    auto challenge = tr.generateChallenge(ipa::LABEL_X);
+    ipa::Transcript tr(SeperateLabel::LABEL_IPA);
+    auto challenge = tr.generateChallenge(SeperateLabel::LABEL_X);
     uint64_t out[4];
     challenge.serialize(out);
 
@@ -43,13 +45,13 @@ BOOST_AUTO_TEST_CASE(testAppendScalar)
         0x27625b6a622c0518,
     };
     bandersnatch::Fr base(raw1);
-    ipa::Transcript tr(ipa::LABEL_LEFT);
+    ipa::Transcript tr(SeperateLabel::LABEL_LEFT);
 
     // append scalar twice
-    tr.appendScalar(base, ipa::LABEL_RESCALING);
-    tr.appendScalar(base, ipa::LABEL_RESCALING);
+    tr.appendScalar(base, SeperateLabel::LABEL_RESCALING);
+    tr.appendScalar(base, SeperateLabel::LABEL_RESCALING);
 
-    auto challenge = tr.generateChallenge(ipa::LABEL_X);
+    auto challenge = tr.generateChallenge(SeperateLabel::LABEL_X);
     uint64_t out[4];
     challenge.serialize(out);
 
@@ -66,13 +68,13 @@ BOOST_AUTO_TEST_CASE(testAppendScalar)
 BOOST_AUTO_TEST_CASE(testAppendPoint)
 {
     auto g = bandersnatch::Element::generator();
-    ipa::Transcript tr(ipa::LABEL_LEFT);
+    ipa::Transcript tr(SeperateLabel::LABEL_LEFT);
 
     // append point twice
-    tr.appendPoint(g, ipa::LABEL_INPUT_POINT);
-    tr.appendPoint(g, ipa::LABEL_OUTPUT_POINT);
+    tr.appendPoint(g, SeperateLabel::LABEL_INPUT_POINT);
+    tr.appendPoint(g, SeperateLabel::LABEL_OUTPUT_POINT);
 
-    auto challenge = tr.generateChallenge(ipa::LABEL_X);
+    auto challenge = tr.generateChallenge(SeperateLabel::LABEL_X);
     uint64_t out[4];
     challenge.serialize(out);
 
@@ -89,15 +91,15 @@ BOOST_AUTO_TEST_CASE(testAppendPoint)
 BOOST_AUTO_TEST_CASE(testAppendLabel)
 {
     auto g = bandersnatch::Element::generator();
-    ipa::Transcript tr(ipa::LABEL_LEFT);
+    ipa::Transcript tr(SeperateLabel::LABEL_LEFT);
 
     // append point and some labels
-    tr.appendPoint(g, ipa::LABEL_INPUT_POINT);
-    tr.appendLabel(ipa::LABEL_COMMITMENT);
-    tr.appendPoint(g, ipa::LABEL_OUTPUT_POINT);
-    tr.appendLabel(ipa::LABEL_RIGHT);
+    tr.appendPoint(g, SeperateLabel::LABEL_INPUT_POINT);
+    tr.appendLabel(SeperateLabel::LABEL_COMMITMENT);
+    tr.appendPoint(g, SeperateLabel::LABEL_OUTPUT_POINT);
+    tr.appendLabel(SeperateLabel::LABEL_RIGHT);
 
-    auto challenge = tr.generateChallenge(ipa::LABEL_X);
+    auto challenge = tr.generateChallenge(SeperateLabel::LABEL_X);
     uint64_t out[4];
     challenge.serialize(out);
 

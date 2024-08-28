@@ -2,12 +2,11 @@
 
 using namespace verkle::ipa;
 
-Fr::FrListPtr IPAConfig::computeBVector(Fr const& evalPoint)
+Fr::FrListPtr IPAConfig::computeBVector(Fr const& evalPoint) const
 {
     if (evalPoint.cmp(maxEvalPoinInsideDomain) > 0)
     {
-        // TODO: use MSM precompute
-        return std::make_shared<std::vector<Fr>>();
+        return m_precomputed_weights.computeBarycentricCoefficients(evalPoint);
     }
 
     // We build b = [0, 0, 0, ... , 1, .., 0] where the 1 element is at the index of the evaluation point.

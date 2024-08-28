@@ -17,7 +17,7 @@ Fr innerProduct(Fr::FrListPtr const& a, Fr::FrListPtr const& b)
     return ret;
 }
 
-template <IsSharedVector T>
+template <Splitable T>
 void splitSlice(T a, T& out1, T& out2)
 {
     if (a->size()%2 != 0)

@@ -62,9 +62,9 @@ Fr Fr::random()
     std::uniform_int_distribution<uint64_t> dis(0, UINT64_MAX);
 
     uint64_t a[4];
-    for (int i = 0; i < 4; ++i)
+    for (auto & i : a)
     {
-        a[i] = dis(gen);
+        i = dis(gen);
     }
     Fr ret(a);
     return ret;
@@ -73,7 +73,7 @@ Fr Fr::random()
 Fr Fr::fromUint64(uint64_t v)
 {
     uint64_t a[4] = {v};
-    return Fr(a);
+    return {a};
 }
 
 uint64_t Fr::toUint64() const

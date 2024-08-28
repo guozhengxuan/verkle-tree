@@ -11,15 +11,15 @@ IPAProof IPAProof::create(
         Fr const& evalPoint
     )
 {
-    transcript->appendLabel(LABEL_IPA);
+    transcript->appendLabel(SeperateLabel::LABEL_IPA);
     
     auto b = config->computeBVector(evalPoint);
     auto innerProd = innerProduct(a, b);
 
-    transcript->appendPoint(commitment, LABEL_COMMITMENT);
-    transcript->appendScalar(evalPoint, LABEL_INPUT_POINT);
-    transcript->appendScalar(innerProd, LABEL_OUTPUT_POINT);
-    auto w = transcript->generateChallenge(LABEL_RESCALING);
+    transcript->appendPoint(commitment, SeperateLabel::LABEL_COMMITMENT);
+    transcript->appendScalar(evalPoint, SeperateLabel::LABEL_INPUT_POINT);
+    transcript->appendScalar(innerProd, SeperateLabel::LABEL_OUTPUT_POINT);
+    auto w = transcript->generateChallenge(SeperateLabel::LABEL_RESCALING);
 
     auto q = config->m_Q.mult(w);
 
@@ -33,13 +33,13 @@ IPAProof IPAProof::create(
     for (size_t i = 0; i < rounds; i++)
     {
         Fr::FrListPtr a_L, a_R;
-        splitSlice(a, a_L, a_R);
+        split(a, a_L, a_R);
 
         Fr::FrListPtr b_L, b_R;
-        splitSlice(b, b_L, b_R);
+        split(b, b_L, b_R);
 
         Element::ElementListPtr G_L, G_R;
-        splitSlice(currentBasis, G_L, G_R);
+        split(currentBasis, G_L, G_R);
 
         auto z_L = innerProduct(a_R, b_L);
         auto z_R = innerProduct(a_L, b_R);
