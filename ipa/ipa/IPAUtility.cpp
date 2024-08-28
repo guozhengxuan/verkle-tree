@@ -37,13 +37,43 @@ void splitSlice(T a, T& out1, T& out2)
     out2 = std::make_shared<decltype(second)>(second);
 }
 
-void commit(Element::ElementListPtr const& groupElements, Fr::FrListPtr const& polynomial)
+Element commit(Element::ElementListPtr const& groupElements, Fr::FrListPtr const& polynomial)
 {
     if (groupElements->size() != polynomial->size()) {
-        throw std::runtime_error("a and b are different sizes, " +
+        throw std::runtime_error("group elements and polynomial are different sizes, " +
             std::to_string(groupElements->size()) + " != " + std::to_string(polynomial->size()));
     }
 
+    return Element::msm(groupElements, polynomial);
+}
 
+Fr::FrListPtr foldScalars(Fr::FrListPtr const& a, Fr::FrListPtr const& b, Fr const& x)
+{
+    if (a->size() != b->size()) {
+        throw std::runtime_error("a and b are different sizes, " +
+            std::to_string(a->size()) + " != " + std::to_string(b->size()));
+    }
+    auto ret = std::make_shared<std::vector<Fr>>(a->size());
+    for (size_t i = 0; i < a->size(); ++i)
+    {
+        ret->at(i) = a->at(i) + b->at(i) * x;
+    }
+    return ret;
+}
 
+Element::ElementListPtr foldPoints(
+    Element::ElementListPtr const& a,
+    Element::ElementListPtr const& b,
+    Fr const& x)
+{
+    if (a->size() != b->size()) {
+        throw std::runtime_error("a and b are different sizes, " +
+            std::to_string(a->size()) + " != " + std::to_string(b->size()));
+    }
+    auto ret = std::make_shared<std::vector<Element>>(a->size());
+    for (size_t i = 0; i < a->size(); ++i)
+    {
+        ret->at(i) = a->at(i).add(b->at(i).mult(x));
+    }
+    return ret;
 }

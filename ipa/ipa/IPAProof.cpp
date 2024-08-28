@@ -7,7 +7,7 @@ IPAProof IPAProof::create(
         Transcript::Ptr transcript,
         IPAConfig::Ptr config, 
         Element const& commitment, 
-        Fr::FrListPtr const& a,
+        Fr::FrListPtr& a,
         Fr const& evalPoint
     )
 {
@@ -44,18 +44,70 @@ IPAProof IPAProof::create(
         auto z_L = innerProduct(a_R, b_L);
         auto z_R = innerProduct(a_L, b_R);
 
-        // auto C_L_1 =
+        auto C_L_1 = commit(G_L, a_R);
+        auto C_L = commit(
+            std::make_shared<std::vector<Element>>(std::initializer_list<auto>{C_L_1, q}),
+            std::make_shared<std::vector<Fr>>(std::initializer_list<auto>{Fr::one(), z_L})
+            );
 
+        auto C_R_1 = commit(G_R, a_L);
+        auto C_R = commit(
+            std::make_shared<std::vector<Element>>(std::initializer_list<auto>{C_R_1, q}),
+            std::make_shared<std::vector<Fr>>(std::initializer_list<auto>{Fr::one(), z_R})
+            );
+
+        L->at(i) = C_L;
+        R->at(i) = C_R;
+
+        transcript->appendPoint(C_L, SeperateLabel::LABEL_LEFT);
+        transcript->appendPoint(C_R, SeperateLabel::LABEL_RIGHT);
+        auto x = transcript->generateChallenge(SeperateLabel::LABEL_X);
+        auto xInv = x.inv();
+
+        a = foldScalars(a_L, a_R, x);
+        b = foldScalars(b_L, b_R, xInv);
+        currentBasis = foldPoints(G_L, G_R, xInv);
     }
+
+    if (a->size() != 1)
+    {
+        throw std::runtime_error("length of `a` should be 1 at the end of the reduction");
+    }
+
+    IPAProof ret;
+    ret.m_left = L;
+    ret.m_right = R;
+    ret.m_a = a->at(0);
+    return ret;
 }
 
-bool IPAProof::check(
+bool IPAProof::check (
         Transcript::Ptr transcript, 
         IPAConfig::Ptr config, 
-        Element const& commitment, 
+        Element& commitment,
         Fr const& evalPoint,
         Fr const& result
-    )
+    ) const
 {
+    if (m_left->size() != m_right->size() || m_left->size() != config->rounds)
+    {
+        return false;
+    }
+
+    transcript->appendLabel(SeperateLabel::LABEL_IPA);
+
+    auto b = config->computeBVector(evalPoint);
+
+    transcript->appendPoint(commitment, SeperateLabel::LABEL_COMMITMENT);
+    transcript->appendScalar(evalPoint, SeperateLabel::LABEL_INPUT_POINT);
+    transcript->appendScalar(result, SeperateLabel::LABEL_OUTPUT_POINT);
+
+    auto w = transcript->generateChallenge(SeperateLabel::LABEL_RESCALING);
+
+    auto q = config->m_Q.mult(w);
+
+    commitment.add(q.mult(result));
+
+    auto 
 
 }

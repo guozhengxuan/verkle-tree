@@ -20,5 +20,12 @@ namespace verkle::ipa
     template <Splitable T>
     void split(T a, T& out1, T& out2);
 
-    void commit(Element::ElementListPtr groupElements, Fr::FrListPtr polynomial);
+    Element commit(Element::ElementListPtr groupElements, Fr::FrListPtr polynomial);
+
+    Fr::FrListPtr foldScalars(Fr::FrListPtr const& a, Fr::FrListPtr const& b, Fr const& x);
+
+    Element::ElementListPtr foldPoints(
+        Element::ElementListPtr const& a,
+        Element::ElementListPtr const& b,
+        Fr const& x);
 }

@@ -6,6 +6,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "IPAProof.h"
+
 namespace verkle::ipa
 {
 enum class SeperateLabel
@@ -37,6 +39,7 @@ public:
     void appendPoint(const bandersnatch::Element& point, SeperateLabel label);
 
     bandersnatch::Fr generateChallenge(SeperateLabel label);
+    bandersnatch::Fr::FrListPtr generateChallengeByProof(IPAProof const& proof);
 };
 
 inline const std::unordered_map<SeperateLabel, const char*> Transcript::labelValues = {
