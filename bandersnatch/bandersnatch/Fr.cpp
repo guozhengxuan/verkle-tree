@@ -88,7 +88,9 @@ int Fr::cmp(const Fr& other) const
         if (m_val.l[i] > other.m_val.l[i])
         {
             return 1;
-        } else if (m_val.l[i] < other.m_val.l[i])
+        }
+
+        if (m_val.l[i] < other.m_val.l[i])
         {
             return -1;
         }

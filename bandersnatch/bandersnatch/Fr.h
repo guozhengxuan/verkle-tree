@@ -3,11 +3,13 @@
 //
 #pragma once
 #include <blst.h>
+#include <memory>
 #include <vector>
 
 namespace verkle::bandersnatch
 {
 class Element;
+class PrecomputedElements;
 
 class Fr
 {
@@ -49,5 +51,6 @@ public:
 private:
     blst_fr m_val{};
     friend class Element;
+    friend class PrecomputedElements;
 };
 }

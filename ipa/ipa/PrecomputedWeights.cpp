@@ -2,7 +2,7 @@
 // Created by Zhengxuan Guo on 2024/8/28.
 //
 
-#include "PrecomputedFrs.h"
+#include "PrecomputedWeights.h"
 
 using namespace verkle::ipa;
 
@@ -10,7 +10,7 @@ using namespace verkle::ipa;
 // This is how we will store the A'(x_i) and 1/A'(x_i)
 // This midpoint variable is used to compute the offset that we need
 // to place 1/A'(x_i)
-PrecomputedFrs::PrecomputedFrs()
+PrecomputedWeights::PrecomputedWeights()
 {
     auto mid = domainSize;
 
@@ -46,7 +46,7 @@ PrecomputedFrs::PrecomputedFrs()
 // computes A'(x_j) where x_j must be an element in the domain
 // This is computed as the product of x_j - x_i where x_i is an element in the domain
 // and x_i is not equal to x_j
-Fr PrecomputedFrs::computeBarycentricWeightForElement(uint64_t element)
+Fr PrecomputedWeights::computeBarycentricWeightForElement(uint64_t element)
 {
     if (element > domainSize)
     {
@@ -70,7 +70,7 @@ Fr PrecomputedFrs::computeBarycentricWeightForElement(uint64_t element)
     return total;
 }
 
-Fr PrecomputedFrs::getInversedBarycentricWeight(size_t index) const
+Fr PrecomputedWeights::getInversedBarycentricWeight(size_t index) const
 {
     auto const mid = m_barycentricWeights->size() / 2;
     return m_barycentricWeights->at(index+mid);
@@ -81,7 +81,7 @@ Fr PrecomputedFrs::getInversedBarycentricWeight(size_t index) const
 // basis, the inner product of `p` and `bary_coeffs` is equal to p(z)
 // Note that `z` should not be in the domain.
 // This can also be seen as the lagrange coefficients L_i(point)
-Fr::FrListPtr PrecomputedFrs::computeBarycentricCoefficients(const Fr& point) const
+Fr::FrListPtr PrecomputedWeights::computeBarycentricCoefficients(const Fr& point) const
 {
     auto lagrangeEvals =  std::make_shared<std::vector<Fr>>(domainSize);
     for (auto i = 0; i < domainSize; ++i)

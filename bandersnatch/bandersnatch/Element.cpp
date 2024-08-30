@@ -22,12 +22,24 @@ Element& Element::operator=(const Element& other)
 Element::Element(const byte* in, size_t len)
 {
     if (len == 0 || len != (in[0]&0x80 ? 48 : 96))
+    {
         throw BLST_BAD_ENCODING;
+    }
+
     blst_p1_affine a;
     BLST_ERROR err = blst_p1_deserialize(&a, in);
+
     if (err != BLST_SUCCESS)
+    {
         throw err;
+    }
+
     blst_p1_from_affine(&m_point, &a);
+}
+
+bool Element::isInG1() const
+{
+    return blst_p1_on_curve(&m_point) && blst_p1_in_g1(&m_point);
 }
 
 Element& Element::add(const Element& other)

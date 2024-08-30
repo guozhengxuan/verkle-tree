@@ -8,6 +8,7 @@
 namespace verkle::bandersnatch
 {
 class Fr;
+class PrecomputedElements;
 
 class Element
 {
@@ -15,7 +16,11 @@ public:
     using ElementListPtr = std::shared_ptr<std::vector<Element>>;
     
     Element();
+
+    // deserialize
     Element(const Element& other);
+    [[nodiscard]] bool isInG1() const;
+
     Element& operator=(const Element& other);
 
     Element(const byte *in, size_t len);
@@ -39,5 +44,6 @@ public:
 
 private:
     blst_p1 m_point;
+    friend class PrecomputedElements;
 };    
 }

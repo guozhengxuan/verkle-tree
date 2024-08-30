@@ -13,9 +13,10 @@ namespace verkle::ipa
 
     // PrecomputedWeights contains precomputed coefficients for efficient
     // usage of the Barycentric formula.
-    class PrecomputedFrs {
+    class PrecomputedWeights {
     public:
-        PrecomputedFrs();
+        using Ptr = std::shared_ptr<PrecomputedWeights>;
+        PrecomputedWeights();
 
         [[nodiscard]] Fr::FrListPtr computeBarycentricCoefficients(const Fr& point) const;
         [[nodiscard]] Fr getInversedBarycentricWeight(size_t index) const;

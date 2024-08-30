@@ -14,14 +14,14 @@ class IPAProof
 public:
     static IPAProof create(
         const Transcript::Ptr& transcript,
-        const IPAConfig::Ptr& config,
+        const IPAConfig& config,
         Element const& commitment, 
         Fr::FrListPtr& a,
         Fr const& evalPoint
     );
     bool check(
         const Transcript::Ptr& transcript,
-        const IPAConfig::Ptr& config,
+        const IPAConfig& config,
         Element& commitment,
         Fr const& evalPoint,
         Fr const& result
@@ -32,6 +32,6 @@ private:
     Element::ElementListPtr m_right;
     Fr m_a;
 
-    Fr::FrListPtr generateChallenges(Transcript::Ptr const& transcript) const;
+    [[nodiscard]] Fr::FrListPtr generateChallenges(Transcript::Ptr const& transcript) const;
 };
 }

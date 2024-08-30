@@ -30,7 +30,7 @@ namespace verkle::ipa::test
         return frs;
     }
 
-    Fr evalOutsideDomain(PrecomputedFrs const& precomputed, Fr::FrListPtr f, Fr const& point)
+    Fr evalOutsideDomain(PrecomputedWeights const& precomputed, Fr::FrListPtr f, Fr const& point)
     {
         auto pointsMinusDomain = std::vector<Fr>(verkle::ipa::domainSize);
         for (size_t i = 0; i < verkle::ipa::domainSize; ++i)

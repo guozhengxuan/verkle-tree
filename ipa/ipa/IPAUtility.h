@@ -19,9 +19,6 @@ namespace verkle::ipa
 
     Fr innerProduct(Fr::FrListPtr const& a, Fr::FrListPtr const& b);
 
-    template <Splitable T>
-    void split(T a, T& out1, T& out2);
-
     Element commit(Element::ElementListPtr const& groupElements, Fr::FrListPtr const& polynomial);
 
     Fr::FrListPtr foldScalars(Fr::FrListPtr const& a, Fr::FrListPtr const& b, Fr const& x);
@@ -30,4 +27,34 @@ namespace verkle::ipa
         Element::ElementListPtr const& a,
         Element::ElementListPtr const& b,
         Fr const& x);
+
+    Element::ElementListPtr generateRandomPoints(size_t numPoints);
+
+    size_t computeNumRounds(size_t vectorSize);
+
+    size_t constexpr window16vs8IndexLimit = 5;
+    size_t constexpr supportedMSMLength = 256;
+
+    template <Splitable T>
+    void split(T a, T& out1, T& out2)
+    {
+        using InnerType = typename T::element_type;
+
+        if (a->size()%2 != 0)
+        {
+            throw std::runtime_error("scalars or elements should have even length");
+        }
+
+        auto mid = a->size() / 2;
+
+        InnerType first(mid);
+        InnerType second(a->size() - mid);
+
+        std::move(a->begin(), a->begin() + mid, first.begin());
+        std::move(a->begin() + mid, a->end(), second.begin());
+
+        out1 = std::make_shared<InnerType>(std::move(first));
+        out2 = std::make_shared<InnerType>(std::move(second));
+    }
+
 }

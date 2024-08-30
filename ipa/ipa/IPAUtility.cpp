@@ -29,26 +29,6 @@ namespace verkle::ipa
         return ret;
     }
 
-    template <Splitable T>
-    void split(T a, T& out1, T& out2)
-    {
-        if (a->size()%2 != 0)
-        {
-            throw std::runtime_error("scalars or elements should have even length");
-        }
-
-        auto mid = a->size() / 2;
-
-        std::vector<Fr> first(mid);
-        std::vector<Fr> second(a->size()-mid);
-
-        std::move(a->begin(), a->begin()+mid, first.begin());
-        std::move(a->begin()+mid, a->end(), second.begin());
-
-        out1 = std::make_shared<decltype(first)>(first);
-        out2 = std::make_shared<decltype(second)>(second);
-    }
-
     Element commit(Element::ElementListPtr const& groupElements, Fr::FrListPtr const& polynomial)
     {
         if (groupElements->size() != polynomial->size()) {
@@ -87,6 +67,34 @@ namespace verkle::ipa
         {
             ret->at(i) = a->at(i).add(b->at(i).mult(x));
         }
+        return ret;
+    }
+
+    Element::ElementListPtr generateRandomPoints(size_t numPoints)
+    {
+        auto const g = Element::generator();
+        auto ret = std::make_shared<std::vector<Element>>(numPoints);
+        for (size_t i = 0; i < numPoints; ++i)
+        {
+            auto randomFr = Fr::random();
+            ret->at(i) = Element::mult(randomFr, g);
+        }
+        return ret;
+    }
+
+    size_t computeNumRounds(size_t vectorSize)
+    {
+        if (vectorSize == 0)
+        {
+            throw std::runtime_error("zero is not a valid input");
+        }
+
+        if ((vectorSize & (vectorSize - 1)) == 0)
+        {
+            throw std::runtime_error("non power of 2 numbers are not valid inputs");
+        }
+
+        size_t ret = std::floor(std::log2(static_cast<double>(vectorSize)));
         return ret;
     }
 }

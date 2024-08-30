@@ -8,9 +8,9 @@
 #include <testutils/TestPromptFixture.h>
 #include <boost/test/unit_test.hpp>
 
-namespace verkle::test
+namespace verkle::ipa::test
 {
-BOOST_FIXTURE_TEST_SUITE(FrTest, TestPromptFixture)
+BOOST_FIXTURE_TEST_SUITE(FrTest, verkle::test::TestPromptFixture)
 
 BOOST_AUTO_TEST_CASE(testFromBytes)
 {

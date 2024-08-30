@@ -5,7 +5,7 @@ using namespace verkle::ipa;
 
 IPAProof IPAProof::create(
         const Transcript::Ptr& transcript,
-        const IPAConfig::Ptr& config,
+        const IPAConfig& config,
         Element const& commitment, 
         Fr::FrListPtr& a,
         Fr const& evalPoint
@@ -13,7 +13,7 @@ IPAProof IPAProof::create(
 {
     transcript->appendLabel(SeperateLabel::LABEL_IPA);
     
-    auto b = config->computeBVector(evalPoint);
+    auto b = config.computeBVector(evalPoint);
     auto innerProd = innerProduct(a, b);
 
     transcript->appendPoint(commitment, SeperateLabel::LABEL_COMMITMENT);
@@ -21,11 +21,11 @@ IPAProof IPAProof::create(
     transcript->appendScalar(innerProd, SeperateLabel::LABEL_OUTPUT_POINT);
     auto w = transcript->generateChallenge(SeperateLabel::LABEL_RESCALING);
 
-    auto q = config->m_Q.mult(w);
+    auto q = Element::mult(w, config.m_Q);
 
-    auto rounds = config->rounds;
+    auto rounds = config.m_rounds;
 
-    auto currentBasis = config->m_srs;
+    auto currentBasis = config.m_srs;
 
     auto L = std::make_shared<std::vector<Element>>(rounds);
     auto R = std::make_shared<std::vector<Element>>(rounds);
@@ -83,20 +83,20 @@ IPAProof IPAProof::create(
 
 bool IPAProof::check (
         const Transcript::Ptr& transcript,
-        const IPAConfig::Ptr& config,
+        const IPAConfig& config,
         Element& commitment,
         Fr const& evalPoint,
         Fr const& result
     ) const
 {
-    if (m_left->size() != m_right->size() || m_left->size() != config->rounds)
+    if (m_left->size() != m_right->size() || m_left->size() != config.m_rounds)
     {
         return false;
     }
 
     transcript->appendLabel(SeperateLabel::LABEL_IPA);
 
-    auto b = config->computeBVector(evalPoint);
+    auto b = config.computeBVector(evalPoint);
 
     transcript->appendPoint(commitment, SeperateLabel::LABEL_COMMITMENT);
     transcript->appendScalar(evalPoint, SeperateLabel::LABEL_INPUT_POINT);
@@ -105,7 +105,7 @@ bool IPAProof::check (
     auto w = transcript->generateChallenge(SeperateLabel::LABEL_RESCALING);
 
     // Rescaling of q.
-    auto q = config->m_Q.mult(w);
+    auto q = Element::mult(w, config.m_Q);
 
     commitment.add(q.mult(result));
 
@@ -132,7 +132,7 @@ bool IPAProof::check (
         frs->insert(frs->end(), {Fr::one(), x, invChallenges->at(i)});
     }
 
-    auto g = config->m_srs;
+    auto g = config.m_srs;
 
     // We compute the folding-scalars for g and b.
     auto foldingScalars = std::make_shared<std::vector<Fr>>(g->size());

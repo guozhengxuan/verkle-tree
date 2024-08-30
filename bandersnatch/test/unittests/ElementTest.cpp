@@ -6,9 +6,15 @@
 #include <testutils/TestPromptFixture.h>
 #include <boost/test/unit_test.hpp>
 
-namespace verkle::test
+namespace verkle::ipa::test
 {
-BOOST_FIXTURE_TEST_SUITE(ElementTest, TestPromptFixture)
+BOOST_FIXTURE_TEST_SUITE(ElementTest, verkle::test::TestPromptFixture)
+
+BOOST_AUTO_TEST_CASE(testInG1)
+{
+    auto g = bandersnatch::Element::generator();
+    BOOST_ASSERT(g.isInG1());
+}
 
 BOOST_AUTO_TEST_CASE(testAdd)
 {

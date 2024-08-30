@@ -8,17 +8,25 @@ if (NOT BASH_COMMAND)
     message(FATAL_ERROR "bash not found")
 endif ()
 
+set(BLST_INSTALL_COMMAND
+    sh -c
+    "cp <SOURCE_DIR>/bindings/blst.h <INSTALL_DIR>/include/ &&
+    cp <SOURCE_DIR>/bindings/blst.hpp <INSTALL_DIR>/include/ &&
+    cp <SOURCE_DIR>/bindings/blst_aux.h <INSTALL_DIR>/include/ &&
+    cp <SOURCE_DIR>/libblst.a <INSTALL_DIR>/lib/"
+)
+
 ExternalProject_Add(blst_project
     PREFIX ${CMAKE_SOURCE_DIR}/deps
     GIT_REPOSITORY https://github.com/supranational/blst.git
-    GIT_TAG 3dd0f804b1819e5d03fb22ca2e6fac105932043a
+    GIT_TAG 52cc60d78591a56abb2f3d0bd1cdafc6ba242997
     GIT_SHALLOW 0
 
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
     BUILD_IN_SOURCE 1
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ${BLST_BUILD_COMMAND}
-    INSTALL_COMMAND sh -c "cp <SOURCE_DIR>/bindings/blst.h <INSTALL_DIR>/include/  && cp <SOURCE_DIR>/bindings/blst_aux.h <INSTALL_DIR>/include/ && cp <SOURCE_DIR>/libblst.a <INSTALL_DIR>/lib/"
+    INSTALL_COMMAND ${BLST_INSTALL_COMMAND}
     LOG_BUILD true
     LOG_INSTALL true
     LOG_CONFIGURE true

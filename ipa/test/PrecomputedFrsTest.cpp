@@ -6,7 +6,7 @@
 #include <boost/test/unit_test.hpp>
 
 #include "ipa/IPAUtility.h"
-#include "ipa/PrecomputedFrs.h"
+#include "ipa/PrecomputedWeights.h"
 
 namespace verkle::ipa::test
 {
@@ -33,7 +33,7 @@ namespace verkle::ipa::test
         auto outsidePoint = Fr::fromUint64(3400);
         auto lagrangeFrs = testPoly256(std::vector<uint64_t>{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
 
-        auto precomputed = PrecomputedFrs();
+        auto precomputed = PrecomputedWeights();
 
         auto barCoeffs = precomputed.computeBarycentricCoefficients(outsidePoint);
         auto got = innerProduct(lagrangeFrs, barCoeffs);

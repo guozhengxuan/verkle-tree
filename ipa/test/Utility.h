@@ -2,15 +2,16 @@
 // Created by Zhengxuan Guo on 2024/8/29.
 //
 #pragma once
-#include "ipa/PrecomputedFrs.h"
 #include "bandersnatch/Fr.h"
+#include "ipa/PrecomputedWeights.h"
+#include "ipa/IPAConfig.h"
 
 using verkle::bandersnatch::Fr;
 
 namespace verkle::ipa::test
 {
     Fr::FrListPtr testPoly256(std::vector<uint64_t> const& polynomial);
-    Fr evalOutsideDomain(PrecomputedFrs const& precomputed, Fr::FrListPtr f, Fr const& point);
+    Fr evalOutsideDomain(PrecomputedWeights const& precomputed, Fr::FrListPtr f, Fr const& point);
     Fr evalPoly(Fr::FrListPtr const& poly, Fr const& evalPoint);
 
     using FrPoint = std::pair<Fr, Fr>;
