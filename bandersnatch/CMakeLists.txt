@@ -6,7 +6,7 @@ file(GLOB_RECURSE SRCS bandersnatch/*.cpp)
 file(GLOB_RECURSE HEADERS bandersnatch/*.h)
 
 add_library(bandersnatch ${SRCS} ${HEADERS})
-target_link_directories(bandersnatch PUBLIC bandersnatch)
+target_include_directories(bandersnatch PUBLIC .)
 target_link_libraries(bandersnatch PUBLIC blst)
 
 if (TESTS)

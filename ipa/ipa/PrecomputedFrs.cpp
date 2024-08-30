@@ -64,12 +64,16 @@ Fr PrecomputedFrs::computeBarycentricWeightForElement(uint64_t element)
             continue;
         }
 
-        auto fr_i = Fr::fromUint64(i);
-        total *= domainEle - fr_i;
+        total *= domainEle - Fr::fromUint64(i);
     }
 
     return total;
+}
 
+Fr PrecomputedFrs::getInversedBarycentricWeight(size_t index) const
+{
+    auto const mid = m_barycentricWeights->size() / 2;
+    return m_barycentricWeights->at(index+mid);
 }
 
 // ComputeBarycentricCoefficients, computes the coefficients `bary_coeffs`

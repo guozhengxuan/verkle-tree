@@ -26,10 +26,11 @@ public:
     bool operator==(const Element& other) const;
     bool operator!=(const Element& other) const;
 
+    static Element zero();
     static Element add(const Element& a, const Element& b);
     static Element dbl(const Element& a);
     static Element mult(const Fr& fr, const Element& a);
-    static Element msm(Element::ElementListPtr points, Fr::FrListPtr scalars);
+    static Element msm(const Element::ElementListPtr& points, const Fr::FrListPtr& scalars);
 
     static Element generator();
 

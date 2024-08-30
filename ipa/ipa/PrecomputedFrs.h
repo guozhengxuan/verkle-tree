@@ -18,6 +18,7 @@ namespace verkle::ipa
         PrecomputedFrs();
 
         [[nodiscard]] Fr::FrListPtr computeBarycentricCoefficients(const Fr& point) const;
+        [[nodiscard]] Fr getInversedBarycentricWeight(size_t index) const;
 
         static Fr computeBarycentricWeightForElement(uint64_t element);
 

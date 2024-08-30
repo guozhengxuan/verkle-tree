@@ -73,7 +73,7 @@ Fr Fr::random()
 Fr Fr::fromUint64(uint64_t v)
 {
     uint64_t a[4] = {v};
-    return {a};
+    return Fr(a);
 }
 
 uint64_t Fr::toUint64() const

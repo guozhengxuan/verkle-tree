@@ -19,7 +19,7 @@ public:
     Fr& operator=(const Fr& other);
 
     // deserialize
-    Fr(const uint64_t a[4]);
+    explicit Fr(const uint64_t a[4]);
     Fr(const byte* msg, size_t nbits);
 
     static Fr zero();

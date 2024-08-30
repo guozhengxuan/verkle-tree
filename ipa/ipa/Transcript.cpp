@@ -60,15 +60,3 @@ verkle::bandersnatch::Fr Transcript::generateChallenge(SeperateLabel label)
 
     return ret;
 }
-
-verkle::bandersnatch::Fr::FrListPtr Transcript::generateChallengeByProof(IPAProof const& proof)
-{
-    auto out = std::make_shared<std::vector<Fr>>(proof.m_left->size());
-    for (size_t i = 0; i < proof.m_left->size(); ++i)
-    {
-        appendPoint(proof.m_left->at(i), SeperateLabel::LABEL_LEFT);
-        appendPoint(proof.m_right->at(i), SeperateLabel::LABEL_RIGHT);
-        out->at(i) = generateChallenge(SeperateLabel::LABEL_X);
-    }
-    return out;
-}

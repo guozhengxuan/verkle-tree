@@ -9,25 +9,29 @@ using verkle::bandersnatch::Element;
 
 namespace verkle::ipa
 {
-struct  IPAProof
+class IPAProof
 {
-    Element::ElementListPtr m_left;
-    Element::ElementListPtr m_right;
-    Fr m_a;
-
+public:
     static IPAProof create(
-        Transcript::Ptr transcript, 
-        IPAConfig::Ptr config, 
+        const Transcript::Ptr& transcript,
+        const IPAConfig::Ptr& config,
         Element const& commitment, 
         Fr::FrListPtr& a,
         Fr const& evalPoint
     );
     bool check(
-        Transcript::Ptr transcript, 
-        IPAConfig::Ptr config, 
+        const Transcript::Ptr& transcript,
+        const IPAConfig::Ptr& config,
         Element& commitment,
         Fr const& evalPoint,
         Fr const& result
     ) const;
+
+private:
+    Element::ElementListPtr m_left;
+    Element::ElementListPtr m_right;
+    Fr m_a;
+
+    Fr::FrListPtr generateChallenges(Transcript::Ptr const& transcript) const;
 };
 }

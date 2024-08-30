@@ -5,7 +5,7 @@ file(GLOB_RECURSE HEADERS ipa/*.h)
 
 add_library(ipa ${SRCS} ${HEADERS})
 add_dependencies(ipa bandersnatch utilities common)
-target_include_directories(ipa PUBLIC ../bandersnatch ipa)
+target_include_directories(ipa PUBLIC .)
 target_link_libraries(ipa PUBLIC bandersnatch utilities common)
 
 if (TESTS)

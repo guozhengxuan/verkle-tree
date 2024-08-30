@@ -15,12 +15,14 @@ namespace verkle::ipa
         { a->end() } -> std::random_access_iterator;
     };
 
+    Fr::FrListPtr powers(Fr const& x, size_t degree);
+
     Fr innerProduct(Fr::FrListPtr const& a, Fr::FrListPtr const& b);
 
     template <Splitable T>
     void split(T a, T& out1, T& out2);
 
-    Element commit(Element::ElementListPtr groupElements, Fr::FrListPtr polynomial);
+    Element commit(Element::ElementListPtr const& groupElements, Fr::FrListPtr const& polynomial);
 
     Fr::FrListPtr foldScalars(Fr::FrListPtr const& a, Fr::FrListPtr const& b, Fr const& x);
 

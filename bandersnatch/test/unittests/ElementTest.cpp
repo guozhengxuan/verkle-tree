@@ -71,6 +71,27 @@ BOOST_AUTO_TEST_CASE(testMult)
     BOOST_ASSERT(g2 == exp);
 }
 
+BOOST_AUTO_TEST_CASE(testMsm)
+{
+    auto scalars = std::make_shared<std::vector<bandersnatch::Fr>>(256);
+    auto points = std::make_shared<std::vector<bandersnatch::Element>>(256);
+    auto exp = bandersnatch::Element::zero();
+    for (size_t i = 0; i < 256; ++i)
+    {
+        auto randomFr = bandersnatch::Fr::random();
+        auto randomPoint = bandersnatch::Element::generator().mult(randomFr);
+
+        // naive sum of multiple multiplication
+        exp.add(bandersnatch::Element::mult(randomFr, randomPoint));
+
+        scalars->at(i) = randomFr;
+        points->at(i) = randomPoint;
+    }
+
+    auto res = bandersnatch::Element::msm(points, scalars);
+    BOOST_ASSERT(res == exp);
+}
+
 BOOST_AUTO_TEST_CASE(testEqual)
 {
     uint8_t raw[96] = {

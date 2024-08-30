@@ -50,7 +50,7 @@ Element& Element::mult(const Fr& fr)
     return *this;
 }
 
-Element Element::msm(Element::ElementListPtr points, Fr::FrListPtr scalars)
+Element Element::msm(const ElementListPtr& points, const Fr::FrListPtr& scalars)
 {
     if (points->size() != scalars->size()) {
         throw std::runtime_error("points and scalars have different sizes, " +
@@ -63,29 +63,21 @@ Element Element::msm(Element::ElementListPtr points, Fr::FrListPtr scalars)
     // By now we use Pippenger's algorithm to accelerate MSM (Multi-Scalar Multiplication).
     // It is implemented in blst lib.
     auto sz = blst_p1s_mult_pippenger_scratch_sizeof(points->size());
-    std::unique_ptr<limb_t[]> scratch{new limb_t[sz/sizeof(limb_t)]};
-
-    auto* affinePoints = new blst_p1_affine[n];
-    auto* baseScalars = new byte* [n];
+    limb_t scratch[sz/sizeof(limb_t)];
+    blst_p1_affine affinePoints[n];
+    blst_scalar baseScalars[n];
 
     for (auto i = 0; i < n; ++i)
     {
         blst_p1_to_affine(&affinePoints[i], &points->at(i).m_point);
-
-        blst_scalar tmp;
-        blst_scalar_from_fr(&tmp, &scalars->at(i).m_val);
-        baseScalars[i] = tmp.b;
+        blst_scalar_from_fr(&baseScalars[i], &scalars->at(i).m_val);
     }
+
+    const blst_p1_affine* pointsArg[2] = {affinePoints, nullptr};
+    const byte* scalarsArg[2] = {reinterpret_cast<byte*>(baseScalars), nullptr};
 
     Element ret;
-    blst_p1s_mult_pippenger(&ret.m_point, &affinePoints, n, baseScalars, 255, scratch.get());
-
-    for (size_t i = 0; i < n; ++i)
-    {
-        delete[] baseScalars[i];
-    }
-    delete[] affinePoints;
-    delete[] baseScalars;
+    blst_p1s_mult_pippenger(&ret.m_point, pointsArg, n, scalarsArg, 255, scratch);
 
     return ret;
 }
@@ -98,6 +90,14 @@ bool Element::operator==(const Element& other) const
 bool Element::operator!=(const Element& other) const
 {
     return !(*this == other);
+}
+
+Element Element::zero()
+{
+    // Identity/infinity of G1.
+    Element ret;
+    memset(&ret.m_point, 0, sizeof(ret.m_point));
+    return ret;
 }
 
 Element Element::add(const Element& a, const Element& b)

@@ -3,10 +3,7 @@
 #include "bandersnatch/Element.h"
 #include "verkleutils/Hash.h"
 #include <sstream>
-#include <string>
 #include <unordered_map>
-
-#include "IPAProof.h"
 
 namespace verkle::ipa
 {
@@ -25,21 +22,21 @@ enum class SeperateLabel
 // The transcript is for challenge scalars generation.
 class Transcript
 {
+public:
+    using Ptr = std::shared_ptr<Transcript>;
+
+    Transcript(SeperateLabel label);
+
+    void appendLabel(SeperateLabel label);
+    void appendScalar(const bandersnatch::Fr& scalar, SeperateLabel label);
+    void appendPoint(const bandersnatch::Element& point, SeperateLabel label);
+    bandersnatch::Fr generateChallenge(SeperateLabel label);
+
 private:
     std::stringstream m_buffer;
     utils::Hash m_state;
     static const std::unordered_map<SeperateLabel, const char*> labelValues;
     static const char* getLabelValue(const SeperateLabel& label);
-
-public:
-    using Ptr = std::shared_ptr<Transcript>;
-    Transcript(SeperateLabel label);
-    void appendLabel(SeperateLabel label);
-    void appendScalar(const bandersnatch::Fr& scalar, SeperateLabel label);
-    void appendPoint(const bandersnatch::Element& point, SeperateLabel label);
-
-    bandersnatch::Fr generateChallenge(SeperateLabel label);
-    bandersnatch::Fr::FrListPtr generateChallengeByProof(IPAProof const& proof);
 };
 
 inline const std::unordered_map<SeperateLabel, const char*> Transcript::labelValues = {
