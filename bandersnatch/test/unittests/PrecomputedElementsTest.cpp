@@ -23,7 +23,7 @@ namespace verkle::ipa::test
         auto exp = Element::zero();
         for (size_t i = 0; i < 256; ++i)
         {
-            auto randomFr = bandersnatch::Fr::random();
+            auto randomFr = Fr::random();
             auto randomPoint = Element::generator().mult(randomFr);
 
             // naive sum of multiple multiplication

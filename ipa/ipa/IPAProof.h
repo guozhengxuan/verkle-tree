@@ -13,16 +13,16 @@ class IPAProof
 {
 public:
     static IPAProof create(
-        const Transcript::Ptr& transcript,
+        Transcript::Ptr& transcript,
         const IPAConfig& config,
         Element const& commitment, 
-        Fr::FrListPtr& a,
+        Fr::FrListPtr a,
         Fr const& evalPoint
     );
     bool check(
-        const Transcript::Ptr& transcript,
+        Transcript::Ptr& transcript,
         const IPAConfig& config,
-        Element& commitment,
+        Element const& commitment,
         Fr const& evalPoint,
         Fr const& result
     ) const;

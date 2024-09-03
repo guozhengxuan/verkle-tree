@@ -85,7 +85,7 @@ BOOST_AUTO_TEST_CASE(testMsm)
     for (size_t i = 0; i < 256; ++i)
     {
         auto randomFr = bandersnatch::Fr::random();
-        auto randomPoint = bandersnatch::Element::generator().mult(randomFr);
+        auto randomPoint = bandersnatch::Element::mult(randomFr, bandersnatch::Element::generator());
 
         // naive sum of multiple multiplication
         exp.add(bandersnatch::Element::mult(randomFr, randomPoint));

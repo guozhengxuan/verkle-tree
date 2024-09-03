@@ -65,7 +65,7 @@ namespace verkle::ipa
         auto ret = std::make_shared<std::vector<Element>>(a->size());
         for (size_t i = 0; i < a->size(); ++i)
         {
-            ret->at(i) = a->at(i).add(b->at(i).mult(x));
+            ret->at(i) = Element::add(a->at(i), Element::mult(x, b->at(i)));
         }
         return ret;
     }
@@ -89,7 +89,7 @@ namespace verkle::ipa
             throw std::runtime_error("zero is not a valid input");
         }
 
-        if ((vectorSize & (vectorSize - 1)) == 0)
+        if ((vectorSize & (vectorSize - 1)) != 0)
         {
             throw std::runtime_error("non power of 2 numbers are not valid inputs");
         }

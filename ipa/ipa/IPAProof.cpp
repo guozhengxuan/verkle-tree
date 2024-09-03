@@ -4,16 +4,18 @@
 using namespace verkle::ipa;
 
 IPAProof IPAProof::create(
-        const Transcript::Ptr& transcript,
+        Transcript::Ptr& transcript,
         const IPAConfig& config,
         Element const& commitment, 
-        Fr::FrListPtr& a,
+        Fr::FrListPtr a,
         Fr const& evalPoint
     )
 {
     transcript->appendLabel(SeperateLabel::LABEL_IPA);
     
     auto b = config.computeBVector(evalPoint);
+
+    // Compute f(z)
     auto innerProd = innerProduct(a, b);
 
     transcript->appendPoint(commitment, SeperateLabel::LABEL_COMMITMENT);
@@ -29,6 +31,11 @@ IPAProof IPAProof::create(
 
     auto L = std::make_shared<std::vector<Element>>(rounds);
     auto R = std::make_shared<std::vector<Element>>(rounds);
+
+    // for debug
+    auto rawComm = std::vector<Element>(rounds);
+    auto localComm = Element::add(Element::mult(innerProd, q), commitment);
+    // end for debug
 
     for (size_t i = 0; i < rounds; i++)
     {
@@ -46,14 +53,14 @@ IPAProof IPAProof::create(
 
         auto C_L_1 = commit(G_L, a_R);
         auto C_L = commit(
-            std::make_shared<std::vector<Element>>(std::initializer_list<Element>{C_L_1, q}),
-            std::make_shared<std::vector<Fr>>(std::initializer_list<Fr>{Fr::one(), z_L})
+            std::make_shared<std::vector<Element>>(std::vector<Element>{C_L_1, q}),
+            std::make_shared<std::vector<Fr>>(std::vector<Fr>{Fr::one(), z_L})
             );
 
         auto C_R_1 = commit(G_R, a_L);
         auto C_R = commit(
-            std::make_shared<std::vector<Element>>(std::initializer_list<Element>{C_R_1, q}),
-            std::make_shared<std::vector<Fr>>(std::initializer_list<Fr>{Fr::one(), z_R})
+            std::make_shared<std::vector<Element>>(std::vector<Element>{C_R_1, q}),
+            std::make_shared<std::vector<Fr>>(std::vector<Fr>{Fr::one(), z_R})
             );
 
         L->at(i) = C_L;
@@ -82,9 +89,9 @@ IPAProof IPAProof::create(
 }
 
 bool IPAProof::check (
-        const Transcript::Ptr& transcript,
+        Transcript::Ptr& transcript,
         const IPAConfig& config,
-        Element& commitment,
+        Element const& commitment,
         Fr const& evalPoint,
         Fr const& result
     ) const
@@ -107,7 +114,7 @@ bool IPAProof::check (
     // Rescaling of q.
     auto q = Element::mult(w, config.m_Q);
 
-    commitment.add(q.mult(result));
+    auto adapted = Element::add(commitment, Element::mult(result, q));
 
     auto challenges = generateChallenges(transcript);
     auto invChallenges = std::make_shared<std::vector<Fr>>(challenges->size());
@@ -117,19 +124,14 @@ bool IPAProof::check (
     }
 
     // Compute expected commitment
-    auto elements = std::make_shared<std::vector<Element>>(3);
-    auto frs = std::make_shared<std::vector<Fr>>(3);
     for (size_t i = 0; i < challenges->size(); ++i)
     {
         auto x = challenges->at(i);
         auto L = m_left->at(i);
         auto R = m_right->at(i);
 
-        elements->clear();
-        elements->insert(elements->end(), {commitment, L, R});
-
-        frs->clear();
-        frs->insert(frs->end(), {Fr::one(), x, invChallenges->at(i)});
+        adapted = commit(std::make_shared<std::vector<Element>>(std::vector<Element>{adapted, L, R}),
+            std::make_shared<std::vector<Fr>>(std::vector<Fr>{Fr::one(), x, invChallenges->at(i)}));
     }
 
     auto g = config.m_srs;
@@ -154,11 +156,13 @@ bool IPAProof::check (
     auto g0 = Element::msm(g, foldingScalars);
     auto b0 = innerProduct(b, foldingScalars);
 
-    auto part1 = g0.mult(m_a);
-    auto part2 = q.mult(b0*m_a);
-    auto expected = part1.add(part2);
+    auto part1 = Element::mult(m_a, g0);
+    auto part2 = Element::mult(b0*m_a, q);
 
-    return expected == commitment;
+    //  g0 * a + (a * b) * Q
+    auto expected = Element::add(part1, part2);
+
+    return expected == adapted;
 }
 
 

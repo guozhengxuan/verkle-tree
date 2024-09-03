@@ -7,14 +7,6 @@ using verkle::bandersnatch::Element;
 
 namespace verkle::ipa
 {
-    template <typename T>
-    concept Splitable = requires(T a)
-    {
-        { a->size() } -> std::convertible_to<std::size_t>;
-        { a->begin() } -> std::random_access_iterator;
-        { a->end() } -> std::random_access_iterator;
-    };
-
     Fr::FrListPtr powers(Fr const& x, size_t degree);
 
     Fr innerProduct(Fr::FrListPtr const& a, Fr::FrListPtr const& b);
@@ -34,6 +26,14 @@ namespace verkle::ipa
 
     size_t constexpr window16vs8IndexLimit = 5;
     size_t constexpr supportedMSMLength = 256;
+
+    template <typename T>
+    concept Splitable = requires(T a)
+    {
+        { a->size() } -> std::convertible_to<std::size_t>;
+        { a->begin() } -> std::random_access_iterator;
+        { a->end() } -> std::random_access_iterator;
+    };
 
     template <Splitable T>
     void split(T a, T& out1, T& out2)

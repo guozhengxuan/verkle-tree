@@ -16,21 +16,23 @@ namespace verkle::ipa::test
 
     BOOST_AUTO_TEST_CASE(TestIPAProofCreateVerify)
     {
+        auto& config = IPAConfig::getConfig();
+
         // Shared view
         auto point = bandersnatch::Fr::fromUint64(123456789);
 
         // Prover view
         auto poly = testPoly256(std::vector<uint64_t>{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14});
-        auto& config = IPAConfig::getConfig();
         auto proverCommitment = config.commit(poly);
         auto proverTranscript = std::make_shared<Transcript>(SeperateLabel::LABEL_IPA);
+
         auto proof = IPAProof::create(proverTranscript, config, proverCommitment, poly, point);
 
         auto lagrangeCoeffs = config.m_precomputed_weights->computeBarycentricCoefficients(point);
         auto innerProd = innerProduct(poly, lagrangeCoeffs);
 
         // Verifier view
-        auto verifierCommitment = proverCommitment;
+        const auto& verifierCommitment = proverCommitment;
         auto verifierTranscript = std::make_shared<Transcript>(SeperateLabel::LABEL_IPA);
 
         BOOST_ASSERT(proof.check(verifierTranscript, config, verifierCommitment, point, innerProd));

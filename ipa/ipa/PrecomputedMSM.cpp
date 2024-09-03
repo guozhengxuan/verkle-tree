@@ -31,7 +31,7 @@ Element PrecomputedMSM::msm(Fr::FrListPtr const& scalars)
     auto secondFrs = std::make_shared<std::vector<Fr>>(scalars->begin()+window16vs8IndexLimit, scalars->end());
 
     auto heavyRes = m_heavy->msm(firstFrs);
-    auto lightRes = m_light->msm(firstFrs);
+    auto lightRes = m_light->msm(secondFrs);
 
     return Element::add(heavyRes, lightRes);
 }

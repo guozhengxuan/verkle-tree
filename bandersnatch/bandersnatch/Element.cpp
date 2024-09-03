@@ -62,6 +62,12 @@ Element& Element::mult(const Fr& fr)
     return *this;
 }
 
+
+// This method CAN be called with the point at infinity in `blst_p1` (zero point).
+
+// While this function is significantly faster than g1_lincomb_naive(), we refrain from
+// using it in security-critical places (like verification) because the blst Pippenger code has not
+// been audited. In those critical places, we prefer using g1_lincomb_naive() which is much simpler.
 Element Element::msm(const ElementListPtr& points, const Fr::FrListPtr& scalars)
 {
     if (points->size() != scalars->size()) {
@@ -69,27 +75,42 @@ Element Element::msm(const ElementListPtr& points, const Fr::FrListPtr& scalars)
             std::to_string(points->size()) + " != " + std::to_string(scalars->size()));
     }
 
-    auto n = points->size();
+    auto const n = points->size();
 
     // TODO: parallel optimization
     // By now we use Pippenger's algorithm to accelerate MSM (Multi-Scalar Multiplication).
     // It is implemented in blst lib.
-    auto sz = blst_p1s_mult_pippenger_scratch_sizeof(points->size());
-    limb_t scratch[sz/sizeof(limb_t)];
-    blst_p1_affine affinePoints[n];
-    blst_scalar baseScalars[n];
+    auto const sz = blst_p1s_mult_pippenger_scratch_sizeof(n);
+    auto scratch = std::make_shared<limb_t[]>(sz/sizeof(limb_t));
 
+    auto affinePoints = std::make_shared<blst_p1_affine[]>(n);
+    auto baseScalars = std::make_shared<blst_scalar[]>(n);;
+
+    // Filter out zero points: make a new list p_filtered that contains only non-zero points.
+    size_t newLen = 0;
     for (auto i = 0; i < n; ++i)
     {
-        blst_p1_to_affine(&affinePoints[i], &points->at(i).m_point);
-        blst_scalar_from_fr(&baseScalars[i], &scalars->at(i).m_val);
+        if (!blst_p1_is_inf(&points->at(i).m_point))
+        {
+            blst_p1_to_affine(&affinePoints[newLen], &points->at(i).m_point);
+            blst_scalar_from_fr(&baseScalars[newLen], &scalars->at(i).m_val);
+            newLen++;
+        }
     }
 
-    const blst_p1_affine* pointsArg[2] = {affinePoints, nullptr};
-    const byte* scalarsArg[2] = {reinterpret_cast<byte*>(baseScalars), nullptr};
+    const blst_p1_affine* pointsArg[2] = {affinePoints.get(), nullptr};
+    const byte* scalarsArg[2] = {reinterpret_cast<byte*>(baseScalars.get()), nullptr};
 
     Element ret;
-    blst_p1s_mult_pippenger(&ret.m_point, pointsArg, n, scalarsArg, 255, scratch);
+    blst_p1s_mult_pippenger(&ret.m_point, pointsArg, newLen, scalarsArg, 255, scratch.get());
+
+    // debug
+    auto ret1 = Element::zero();
+    for (size_t i = 0; i < n; ++i)
+    {
+        ret1.add(Element::mult(scalars->at(i), points->at(i)));
+    }
+    auto a = 1;
 
     return ret;
 }

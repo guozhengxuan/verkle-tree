@@ -13,30 +13,29 @@ PrecomputedElements::PrecomputedElements(Element::ElementListPtr const& points, 
             return bits / sizeof(blst_p1_affine);
     }()))
 {
-    blst_p1_affine affinePoints[m_numPoints];
+    auto affinePoints = std::make_shared<blst_p1_affine[]>(m_numPoints);;
     for (size_t i = 0; i < m_numPoints; ++i)
     {
         blst_p1_to_affine(&affinePoints[i], &points->at(i).m_point);
     }
 
-    const blst_p1_affine* pointsArg[2] = {affinePoints, nullptr};
+    const blst_p1_affine* pointsArg[2] = {affinePoints.get(), nullptr};
     blst_p1s_mult_wbits_precompute(m_table.get(), m_window, pointsArg, m_numPoints);
 }
 
 Element PrecomputedElements::msm(Fr::FrListPtr const& scalars) const
 {
     size_t sz = blst_p1s_mult_wbits_scratch_sizeof(m_numPoints);
-    limb_t scratch[sz/sizeof(limb_t)];
-
-    blst_scalar baseScalars[m_numPoints];
+    auto scratch = std::make_shared<limb_t[]>(sz/sizeof(limb_t));
+    auto baseScalars = std::make_shared<blst_scalar[]>(m_numPoints);
     for (size_t i = 0; i < m_numPoints; ++i)
     {
         blst_scalar_from_fr(&baseScalars[i], &scalars->at(i).m_val);
     }
 
     Element ret;
-    const byte* scalarsArg[2] = {reinterpret_cast<byte*>(baseScalars), nullptr};
-    blst_p1s_mult_wbits(&ret.m_point, m_table.get(), m_window, m_numPoints, scalarsArg, 255, scratch);
+    const byte* scalarsArg[2] = {reinterpret_cast<byte*>(baseScalars.get()), nullptr};
+    blst_p1s_mult_wbits(&ret.m_point, m_table.get(), m_window, m_numPoints, scalarsArg, 255, scratch.get());
 
     return ret;
 }
