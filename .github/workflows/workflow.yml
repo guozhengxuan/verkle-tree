@@ -48,7 +48,7 @@ jobs:
       - name: compile
         run: cmake --build build -j2
       - name: run test
-        run: cd build/bandersnatch && ctest
+        run: cd build/ipa && ctest
   build_with_gcc:
     name: build_with_gcc
     runs-on: ${{ matrix.os }}
@@ -76,7 +76,7 @@ jobs:
       - name: compile
         run: cmake --build build -j2
       - name: run test
-        run: cd build/bandersnatch && ctest
+        run: cd build/ipa && ctest
   ubuntu22_04_build_with_gcc:
     name: ubuntu22_04_build_with_gcc
     runs-on: ${{ matrix.os }}
@@ -105,4 +105,4 @@ jobs:
       - name: compile
         run: cmake --build build -j2
       - name: run test
-        run: cd build/bandersnatch && ctest
+        run: cd build/ipa && ctest
