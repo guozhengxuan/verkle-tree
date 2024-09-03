@@ -2,6 +2,7 @@
 // Created by Zhengxuan Guo on 2024/8/13.
 //
 #include "Element.h"
+#include "cstring"
 
 using namespace verkle::bandersnatch;
 
