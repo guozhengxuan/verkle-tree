@@ -62,7 +62,7 @@ jobs:
       - name: install Ubuntu dependencies
         run: |
           sudo apt update
-          sudo apt install -y git curl build-essential cmake
+          sudo apt install -y git curl build-essential cmake gcc-12 g++12
       - name: vcpkg essentials
         run: |
           git clone https://github.com/microsoft/vcpkg.git
@@ -70,8 +70,8 @@ jobs:
           echo "PATH=$PATH:$VCPKG_ROOT" >> "$GITHUB_ENV"
       - name: configure
         run: |
-          export GCC='gcc-10'
-          export CXX='g++-10'
+          export GCC='gcc-12'
+          export CXX='g++-12'
           cmake --preset=test
       - name: compile
         run: cmake --build build -j2
@@ -90,7 +90,7 @@ jobs:
       - name: install Ubuntu dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y git curl build-essential cmake lcov libzstd-dev python3-dev
+          sudo apt-get install -y git curl build-essential cmake lcov libzstd-dev python3-dev gcc-12 g++12
       - name: vcpkg essentials
         run: |
           git clone https://github.com/microsoft/vcpkg.git
@@ -98,8 +98,8 @@ jobs:
           echo "PATH=$PATH:$VCPKG_ROOT" >> "$GITHUB_ENV"
       - name: configure
         run: |
-          export GCC='gcc-10'
-          export CXX='g++-10'
+          export GCC='gcc-12'
+          export CXX='g++-12'
           export CPATH=/Library/Developer/CommandLineTools/usr/include/c++/v1
           cmake --preset=test
       - name: compile

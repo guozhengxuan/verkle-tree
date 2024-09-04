@@ -1,4 +1,5 @@
 #include "IPAUtility.h"
+#include "cmath"
 
 namespace verkle::ipa
 {
