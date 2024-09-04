@@ -38,10 +38,5 @@ namespace verkle::ipa::test
         BOOST_ASSERT(proof.check(verifierTranscript, config, verifierCommitment, point, innerProd));
     }
 
-    BOOST_AUTO_TEST_CASE(TestIPAProofSerializtion)
-    {
-        // TODO
-    }
-
     BOOST_AUTO_TEST_SUITE_END()
 }

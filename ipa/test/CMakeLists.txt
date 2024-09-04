@@ -7,4 +7,4 @@ target_include_directories(ipa-test PRIVATE .)
 find_package(boost_unit_test_framework CONFIG REQUIRED)
 
 target_link_libraries(ipa-test PRIVATE ipa Boost::unit_test_framework)
-add_test(NAME test-bandersnatch WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} COMMAND ipa-test)
+add_test(NAME test-ipa WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY} COMMAND ipa-test)
