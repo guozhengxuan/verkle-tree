@@ -48,7 +48,7 @@ jobs:
       - name: compile
         run: cmake --build build -j2
       - name: run test
-        run: cd build/ipa && ctest
+        run: cd build/ipa && ctest --rerun-failed --output-on-failure && cat Testing/Temporary/LastTest.log
   build_with_gcc:
     name: build_with_gcc
     runs-on: ${{ matrix.os }}
@@ -92,7 +92,7 @@ jobs:
       - name: install Ubuntu dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y git curl build-essential cmake lcov libzstd-dev python3-dev gcc-12 g++12
+          sudo apt-get install -y git curl build-essential cmake gcc-12 g++12
       - name: vcpkg essentials
         run: |
           git clone https://github.com/microsoft/vcpkg.git
@@ -107,4 +107,4 @@ jobs:
       - name: compile
         run: cmake --build build -j2
       - name: run test
-        run: cd build/ipa && ctest
+        run: cd build/ipa && ctest --rerun-failed --output-on-failure && cat Testing/Temporary/LastTest.log
