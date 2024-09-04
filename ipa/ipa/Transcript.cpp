@@ -1,4 +1,5 @@
 #include "Transcript.h"
+#include "cstring"
 
 using namespace verkle::ipa;
 

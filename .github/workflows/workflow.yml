@@ -61,6 +61,8 @@ jobs:
           fetch-depth: 5
       - name: install Ubuntu dependencies
         run: |
+          sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+          sudo apt-get update
           sudo apt update
           sudo apt install -y git curl build-essential cmake gcc-12 g++12
       - name: vcpkg essentials
